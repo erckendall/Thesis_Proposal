@@ -1,0 +1,214 @@
+\section{Background}
+
+While it is widely acknowledged that dark matter (DM) accounts for the majority of the mass of the observable universe \cite{Ade:2015xua}, the precise nature of the constituent particles remains one of the most important open questions in modern cosmology. One of the most successful and widely studied classes of DM models is referred to as WIMP DM, where `WIMP' refers to weakly interacting massive particles. WIMP models propose the existence of an additional fundamental particle, with high mass relative to Standard Model (SM) particles, which is produced thermally in the early universe \cite{Roszkowski:2017nbc}. While there exists no universally agreed upon exact description of the WIMP particle, the common characteristic of a WIMP candidate is that it interacts primarily through gravity, while the strength of any other interaction is of the order of the SM weak nuclear force or below, hence the nomenclature. While WIMP-like particles are readily predicted in supersymmetric extensions to the SM \cite{Chang:2013oia}, no evidence of supersymmetry has yet been found, and negative results from direct-detection WIMP experiments continue to place ever-tighter constraints upon the viable particle parameter space \cite{Cui:2017nnn}. Furthermore, a number of predictions from cosmological simulations incorporating WIMP DM appear to be in tension with observational data \cite{Bullock:2017xww}. Namely, there exist a number of problems at sub-galactic scales, collectively referred to as the `small-scale crisis'. Of particular significance is the so-called `core-cusp' problem \cite{Moore:1994yx}. This arises due to the fact that the DM density profiles of cosmological simulations follow the so-called `NFW' profile \cite{Navarro:1995iw}. This profile scales as $1/r$ in the central region, whereas astrophysical observations instead suggest flatter central density profiles or `cores'. While the seriousness of this problem is a matter of ongoing debate \cite{anna2018}, considered alongside the absence of direct-detection evidence for WIMPs, it serves as an important motivator for the study of alternative models of DM. 
+
+One alternative to WIMP models is ultra-light dark matter (ULDM). In this model, the proposed DM candidate is a scalar particle with an extremely small mass, of the order of $10^-22 eV$. The existence of such a particle is well-motivated by string theory and more generally by field theories incorporating approximate shift symmetries \cite{Hui:2016ltb}. By virtue of the small particle mass, the de Broglie wavelength is very large, resulting in a suppression of small-scale structure and novel quantum effects on astrophysical scales. In particular, it is found that in ULDM, structure formation results in DM halos whose inner regions are kiloparsec-scale Bose-Einstein condensates \cite{Veltmaat:2018dfz}. These condensates adhere to a universal density profile defined by the solitonic solution to the governing equations of ULDM, the Schr{\"o}dinger-Poisson (SP) equations \cite{Marsh:2015xka}. The generic soliton solution to the SP equations is characterised by a density profile with a flat inner core. For this reason, it has been suggested that ULDM may present a natural resolution to the core-cusp problem, without the need to appeal to baryonic physics. Meanwhile, the turbulent outer regions of ULDM halos follow an approximately NFW profile, such that on large scales the predictions of ULDM and WIMP models converge \cite{Du:2016zcv}.
+
+While ULDM represents an intriguing possibility, further investigation is needed to determine whether it constitutes a viable DM candidate. The aim of this research is to explore both the theoretical framework and the physical predictions of ULDM, using novel computational tools. In so doing, the groundwork can be laid to firmly establish the qualitative and quantitative differences in the predictions of ULDM and WIMP DM. Ultimately, a solid understanding of the differences between these models will allow for the undertaking of tests to determine which, if either, is favoured by observational results. This line of enquiry will therefore help to advance the search for the answer to one of the most important questions in cosmology - the true nature of dark matter. 
+
+
+\section{Objectives}
+
+The broad objectives of this research are to develop novel computational methods to study the detailed dynamics of ULDM and to use these computational tools to test a number of hypotheses regarding the suitability of ULDM as a dark matter candidate. The following subsections provide detailed descriptions of both completed objectives and those yet to be completed. 
+
+\subsection{Completed Objectives}
+
+\subsubsection{Complete the development of a computational tool to study ULDM dynamics on a fixed grid (PyUltraLight)}
+
+The first objective of this research project was to complete the testing and development of a computational tool for the modelling of ULDM dynamics. This has now been completed, and has resulted in the public release of the Python-based tool named PyUltraLight and an accompanying paper published in the Journal  of Cosmology and Astroparticle Physics \cite{Edwards:2018ccc}. 
+
+PyUltraLight was designed to solve the Schr{\"o}dinger-Poisson system of coupled differential equations, given by
+\begin{align}\label{eq:SP}
+    i\hbar\Dot{\psi}&=-\frac{\hbar^2}{2m}\nabla^2\psi+m\Phi\psi \\
+    \nabla^2\Phi&=4\pi G m \vert\psi\vert^2,
+\end{align}
+where $\psi$ is the single macroscopic wavefunction describing the ULDM field in the non-relativistic regime, $m$ is the mass of the ULDM fundamental particle, $\Phi$ is the local gravitational potential, and $G$ is Newton's gravitational constant. These coupled equations together form the nonlinear description of ULDM dynamics in the non-relativistic regime. 
+
+To solve the time evolution of an arbitrary initial configuration of $\psi$ on a 3D spatial grid, PyUltraLight uses a split-step pseudo-spectral algorithm, accurate to second order in the timestep. In this method, the spatial derivatives are addressed in Fourier space, while the non-linear action of the operator $\Phi$ is computed in position space. At each timestep, a Fourier transform of the field configuration must be taken. In order to do this efficiently, PyUltraLight makes use of the C-based fast Fourier transform libraries, FFTW \cite{1386650}, and the Pythonic wrapper of these libraries, PyFFTW \cite{pyfftw}. 
+
+Following the completion of PyUltraLight, it was verified through extensive convergence testing, energy conservation checks, and comparison to existing results in the literature regarding ULDM dynamics. In particular, it was shown that not only does PyUltraLight exhibit excellent energy conservation, but that it is able to capture complex wave phenomena such as interference patterns. This verified the suitability of PyUltraLight for further study of ULDM halo interactions and evolution.
+
+\subsection{Future Objectives}
+
+\subsubsection{Use PyUltraLight to investigate the core-cusp problem in ULDM}
+
+It has recently been suggested that in certain mass regimes, ULDM halo profiles are actually out-performed by NFW profiles in terms of agreement with observational data \cite{Robles:2018fur}. This is attributed to the scaling laws governing the solitonic central regions of ULDM halos. Namely, as the soliton mass increases, its radius decreases. This results in increasingly peaked density profiles at high masses, which it has been suggested may actually worsen the core-cusp discrepancy relative to WIMP DM in some cases. 
+
+In order to investigate this problem quantitatively, it is necessary to develop a method by which the archetypal profile of WIMP DM halos, the NFW profile, can be compared with an `equivalent' ULDM profile. This concept of equivalence is non-trivial, however, due to ambiguities in the definition of the physical extent of a DM halo. To see this, consider the analytic form of the NFW profile:
+\begin{equation}
+    \rho(r)=\frac{\rho_0}{\frac{r}{R_s}\left(1+\frac{r}{R_s}\right)^2},
+\end{equation}
+where $R_s$ and $\rho_0$ are parameters which vary between halos. It is clear that at large radii, the NFW profile scales as $1/r^3$, while at small radii, the scaling tends to $1/r$. These properties present difficulties when trying to establish some notion of equivalence between ULDM and WIMP DM halos. The first issue is the divergence of the central density in the NFW profile. Because of this, one cannot simply take a ULDM halo and an NFW halo of the same central density and then compare the profiles as a function of increasing radius. Instead, one must consider the mass of the entire halo, and compare an NFW halo of a given mass with a ULDM halo of the same mass. This comparison, however, is also highly non-trivial. This is in part due to the fact that the mass of an NFW halo is divergent if integrated to arbitrarily large radius. It is therefore necessary to introduce some kind of cutoff radius at which the integral be truncated. It is desired that this cutoff radius have some physical significance, and standard practice is to choose a cutoff related to the virial radius of the halo \cite{White:2000jv}. The virial radius is defined as the radius within which the virial condition holds, that is
+\begin{equation}
+    \langle E_K\rangle = -\frac{1}{2}\langle E_P\rangle,
+\end{equation}
+where $E_K$ and $E_P$ are the kinetic and potential energies, respectively. Despite this simple definition of virialisation, it is not possible to determine the virial radius from the analytic form of the NFW profile. Instead, an assumption for the virial radius is typically employed which derives from a particularly simple model of DM halo formation, referred to variously as the `spherical top-hat collapse model' \cite{Herrera:2017epn}. While this model does not take into account possible complicated merger histories nor asphericity in initial density perturbations, it is still widely accepted as a suitable method of estimating the virial radius of a WIMP DM halo \cite{Suto:2015jdt, 2010arXiv1005.0411C}. Using this method, the virial radius is defined to be the radius within which the average density is some numerical factor of $\mathcal{O}(10^2)$ multiplied by the critical density of the universe. That is to say $\langle \rho\ (<r_{vir})\rangle = \Delta_c\rho_c$. Conventions adopted for the value of $\Delta_c$ vary, with $\Delta_c=200$ a relatively common choice \cite{Zemp:2013bga}. Hence, the mass of an NFW halo is usually taken to be the virial mass, with the virial radius defined as above.
+
+In \cite{Robles:2018fur}, the spherical top-hat collapse model is employed, and the value of $\Delta_c$ is taken from a convention established in \cite{Bryan:1997dn}. It is assumed that this virialisation criterion can be applied both to WIMP DM halos and ULDM halos. The authors also propose a semi-analytic model of the typical ULDM profile. This model utilises a fitting formula to describe the solitonic inner region of a ULDM profile, transitioning to an NFW profile at a specified transition radius, subject to density matching criteria. The authors propose a range of plausible transition radii for which the corresponding halos will be considered valid. Using this semi-analytic model the authors take an NFW profile of a given virial mass and reconstruct the ULDM profile which corresponds to a halo with the same virial mass and radius. They then compare the inner regions of these profiles, and compare the results to observational data for known astrophysical objects. 
+
+What the authors of \cite{Robles:2018fur} do not fully investigate is the validity of the application of the spherical top-hat collapse model to generalised ULDM halos. It is important that this assumption be scrutinised, because if $\langle\rho\rangle=\Delta_c\rho_c$ does not in fact indicate virialisation, then choosing the cutoff radius using this criterion becomes an arbitrary choice, with little physical significance. Indeed, in idealised, non-cosmological simulations, the critical density $\rho_c$ is an arbitrary value which has no effect on the dynamics. Certainly in this case the virialisation assumption derived from the spherical top-hat collapse model should be re-examined.
+
+For these reasons, investigating the consequences of varying the halo cutoff radius will be one of the primary objectives of the next phase of research. The steps of this investigation will be carried out as follows:
+
+\begin{enumerate}
+    \item Reproduce the analysis of \cite{Robles:2018fur}, ensuring that the effects of varying the ULDM transition radius, the NFW concentration parameter, ULDM particle mass, and the assumed value of $\Delta_c$ are taken into account.
+    \item Repeat the analysis of \cite{Robles:2018fur}, however rather than using an assumption for virialisation, utilise mass-radius data from observed astrophysical objects, such that the cutoff radius is taken to be the radius of the most remote tracers. Compare these results with the previous conclusions regarding the core-cusp discrepancy.
+    \item Use PyUltraLight to compute the potential and kinetic energies of a simulated halo as a function of radius. Use this data to compute the true virial radius, and compare this with the predictions of the spherical top-hat collapse model.
+    \item Perform direct comparisons between ULDM PyUltraLight simulations and WIMP DM simulations (using, for example, Gadget \cite{Springel:2005mi}). In so doing, determine in which mass regimes ULDM halos exacerbate the core-cusp problem relative to their WIMP DM counterparts. Compare these results with the theoretical predictions previously calculated. 
+    \item Publish the results of the above investigations, indicating a range of halo masses in which the core-cusp problem is expected to be alleviated in the ULDM model, and a range of masses in which the opposite effect is anticipated. 
+\end{enumerate}
+
+
+\subsubsection{Use PyUltraLight to build a picture of the factors influencing soliton-NFW transition radius}
+
+To date, much of the research in the ULDM field has been focused on the mergers of individual solitons to create realistic ULDM halos \cite{Veltmaat:2016rxo, Schive:2014hza}. While it is widely agreed that the general structure of the merger products can be described as a solitonic inner core surrounded by a wider, NFW-like halo, there are a number of questions still to be resolved about the merger process. One such question relates to the radius at which the transition from the solitonic profile to the NFW profile occurs. In terms of the core radius $r_c$ (customarily defined as the radius at which the density has dropped to half the peak density), simulations suggest that this transition typically occurs at $\sim 3-4r_c$. One of the focuses of this research will be to determine the factors which govern this transition radius. To achieve this, the following steps will be taken:
+\begin{enumerate}
+    \item Simulate binary head-on solitonic mergers for a range of progenitor masses and momenta, and determine how these factors affect the transition radius at a fixed time after the merger
+    \item Simulate binary head-on solitonic mergers for progenitors with a variety of different phase relationships to determine how interference phenomena may influence the transition radius or lead to periodic oscillations in its value
+    \item Simulate binary solitonic mergers with non-zero initial angular momentum to determine how this might affect the transition radius
+    \item Simulate multi-partite mergers for a variety of different progenitor configurations to determine the likely transition radius arising from a randomised initial progenitor configuration
+    \item Compare the results of binary mergers with multi-partite mergers to determine to what extent the resultant halo profiles may be considered to be universal
+    \item Simulate solitonic mergers from highly symmetric initial progenitor configurations to investigate how regularity in the initial conditions can lead to interference effects which augment transition radius
+    \item Compile the results of the above investigation into a comprehensive study of the effects of merger history on the soliton-NFW transition radius
+\end{enumerate}
+
+\subsubsection{Use PyUltraLight to investigate the gravitational cooling process of ULDM merger products}
+
+Another aspect of ULDM merger dynamics which is not yet well understood is the relaxation process of merger products. While it is agreed that the halos produced from energetic mergers expel mass via a process of gravitational cooling \cite{Schwabe:2016rze, Guzman:2006yc}, detailed studies of this process are lacking. While PyUltraLight is a useful tool to investigate merger processes, it employs periodic boundary conditions in order to make discrete Fourier transforms computationally possible. Because of this, mass is conserved within the simulation region, as matter ejected from one side of the box re-enters from the other side. This means that the standard version of PyUltraLight is unsuitable for the study of gravitational cooling, as this is a process which necessarily involves mass loss.
+
+Preliminary testing of a version of PyUltraLight in which the field value is set to zero at the boundary, thereby allowing mass loss to occur, has enjoyed some success. In these tests, the gravitational cooling process results in halo mass decreasing asymptotically to a stable value. However, because this configuration of PyUltraLight does not allow for the eventual re-entry of mass ejected from the simulation region at below escape velocity, the total amount of mass lost may be artificially high. Indeed, in a realistic cosmological scenario, we would expect not only for some initially ejected mass to re-enter after some time period, but we would also expect dynamical mass exchange between neighbouring halos, a factor which is also not captured in this simple modification of PyUltraLight. Another factor which is not adequately accounted for in this simple setup is turbulence in the outer halo which might lead to temporary flow of mass out of the simulation region which would otherwise re-enter were it not for the deletion of mass at the boundary. Furthermore, we find that if the boundary of the simulation region is too close to areas of high density, the mass loss exaggerated further, as might be expected due to the effect of the periodicity of the potential well. 
+
+There are a number of possible ways one might tackle this problem through modifications to PyUltraLight. For example, the velocity of the mass reaching the boundary could in principle be calculated, and the rate of mass loss tracked, such that mass could be continuously re-introduced to the box at the appropriate velocity after a calculated turn-around period. This sort of approach, however, would be very computationally expensive, and slow down the code execution considerably. An alternative approach, which shall be discussed in detail in the following section, is to develop a code for solving ULDM dynamics which implements adaptive mesh refinement (AMR). Using this technique, the simulation region can be greatly expanded, and computational resources dedicated to interesting regions of high density. In this way, the simulation volume can be made sufficiently large that mass ejected with low velocity will not reach the simulation boundary, and will thus remain gravitationally bound within the outer halo. We will return to this discussion in the following section. 
+
+In the absence of an AMR solver for ULDM dynamics, we may still perform a preliminary investigation of gravitational cooling using PyUltraLight, ensuring that we first perform convergence tests to confirm that the simulation region is sufficiently large. To do this, we run a merger simulation at a test resolution until the mass loss has become approximately asymptotically flat. We then run the simulation again, increasing the size of the buffer region between the initial configuration and the boundary, ensuring that the spatial resolution is unchanged. We then examine the final profiles from each run, to ensure that the density profiles are approximately the same within the region occupied by the initial test volume. Once this is confirmed, we may perform the following analysis:
+\begin{enumerate}
+    \item Perform an analysis of the transition radius as a function of time during gravitational cooling. Core stability may dictate that mass loss be restricted to the outer halo, resulting in a gradual increase in transition radius
+    \item Determine how varying the configuration and momenta of progenitors affect the rate and extent of gravitational cooling
+    \item Determine how different conventions for defining the halo extent affect the quoted value of the total mass lost during the gravitional cooling process. Retain these values for later comparison with AMR simulation results
+    \item Study the core-halo mass relation as a function of time during the gravitational cooling process and determine an asymptotic final ratio. Determine this for both the standard definition of the core (bounded by the radius at which the density has dropped to half the peak density), and an alternative definition wherein the core is defined as the solitonic region
+    \item Calculate the partition of energy (kinetic, quantum, and potential) as a function of time and halo radius. Use this to determine when and where a stable virial radius is reached. Compare this virial radius to the assumption from the spherical top-hat collapse convention
+    \item Use time evolution data throughout the gravitational cooling process to look for regular oscillations in the core as evidence of excited modes. Quantify the dependence of these modes on initial conditions
+\end{enumerate}
+
+
+
+\subsubsection{Contribute to the development of a more advanced ULDM simulation tool incorporating AMR}
+
+As mentioned in the previous section, PyUltraLight suffers from limitations due to restrictions on computationally feasible simulation resolutions. In order to study in detail the diffuse outer regions of a ULDM halo, the simulation region should ideally be several orders of magnitude larger than the size of the central solitonic region. However, the central solitonic region needs to be well-resolved in order to accurately ascertain its density profile, and because of the inverse mass-radius scaling relation of solitons, this becomes increasingly difficult as mass increases. This is because computing large simulation volumes at high resolution quickly becomes prohibitively time-consuming.
+
+One method available to overcome this obstacle is referred to as adaptive mesh refinement (AMR) \cite{2018arXiv181001319B, Snaith:2018ghc}. This method has already been employed in a variety of astrophysical hydrodynamical simulations \cite{Almgren:2013sz}, but has yet to be applied to the problem of the Schr{\"o}dinger-Poisson system of equations. In the AMR method, refinement criteria such as density or velocity thresholds are set by the user, such that areas of greatest interest (in our case high density regions) are resolved to a much finer degree than low interest (low density) regions. Using such a technique, the centre of a ULDM halo can be well resolved, while the shape of the outer profile can also be determined to a large radial distance at lower resolution. The study of gravitational cooling will greatly benefit from such a tool, as mentioned in the previous section. In addition to this, an AMR solver of ULDM dynamics will allow for more complicated systems, involving sequential mergers and multiple halos, to be studied. This will enable an assessment of how a non-trivial cosmological neighbourhood might affect the relaxation and subsequent dynamics of halos formed during merger processes, and will allow for a statistical analysis of halo properties to take place.
+
+It may also be possible using AMR to determine a second transition region in ULDM profiles, in addition to the solitonic-NFW transition, where the $1/r^3$ NFW tail steepens further. This would thus allow a finite mass value to be obtained upon integration to spatial infinity. This would of course have important implications for the definitions of halo mass discussed above. 
+
+The process of developing an AMR code for ULDM dynamics has already begun within the cosmology group. As part of this research, the following activities will be completed:
+
+\begin{enumerate}
+    \item Completion and testing of an AMR solver for ULDM dynamics. Verification of this tool using direct comparison to data from PyUltraLight
+    \item Extension of the results of the above research, with a particular focus on determining a `universal' ULDM profile out to large radius
+    \item Investigate large scale structure formation in the ULDM model using cosmological initial conditions replicating the early universe and incorporating cosmic expansion. Comparison of this data to existing results for WIMP DM models
+\end{enumerate}
+
+\subsubsection{Scope for further investigation}\label{additional}
+
+In addition to the above objectives, there are a number of other potential research directions to pursue when the primary goals have been met. One such area of research is to investigate the claim made in \cite{Levkov:2018kau} that solitons may spontaneously materialise when a random ULDM field configuration is left to evolve for a sufficiently long period of time. This could be investigated using the current implementation of PyUltraLight, though the simulation timescales required in order to replicate this effect may be very long, and thus computationally demanding. 
+
+Another interesting research direction would be to investigate the stability of ULDM halos orbiting within larger external potentials. An understanding of this could help to determine the viable mass range of stable Milky Way satellites, and thus provide a useful test of ULDM. Preliminary work on this has already been conducted, with solitonic cores orbiting in a static external Newtonian potential. It would be useful to extend this scenario to solitonic cores orbiting a much larger, generic ULDM halo, which iteslf experiences feedback from interactions with the satellites. This study would be best conducted using the AMR solver for ULLM dynamics, as this would allow the greatest range of satellite to host mass ratios as well as a large range of orbital radii configurations. 
+
+While research thus far has been focused on ULDM models with only gravitational self-interaction, it would be interesting to develop a modified version of PyUltraLight which incorporates non-trivial attractive or repulsive self-interaction in the ULDM field. Theoretical work in this area has indicated that the presence of self-interactions could drastically modify the ULDM dynamics \cite{Suarez:2011yf}, and it would be interesting to undertake a quantitative study of this phenomenon in order to determine the window of parameter space in which such models could successfully describe our cosmology.
+
+Finally, while the research focus thus far has been on ULDM fields alone, it would be interesting to incorporate simplified models of baryonic physics into the simulations. Of particular interest is the incorporation of compact baryonic objects into rotating ULDM halos. This would facilitate a study of how objects such as stars might be expected to move within a galactic ULDM potential. Additionally, it would be useful to study how ULDM halos which incorporate baryonic matter in their cores behave during collisions. It has been suggested that in some cases a collision of this kind could result in an offset between the DM centre of mass and the baryonic centre of mass \cite{Paredes:2015wga}. Further study of this effect may lead to predictions of unusual DM-baryon configurations which could be searched for in future astrophysical observations.
+
+
+
+\section{Methodology and Resources}
+
+Each stage of the research programme will first comprise a review of relevant literature, followed by an evaluation of computing resources required to perform the analysis. Following this, code will be developed and tested as necessary, with a focus on replication of existing results from other sources for verification. Once the testing phase is complete, a combination of theoretical and computational work will be undertaken to establish novel results, and finally these results will be compiled into publishable compendia.
+
+As this research relies heavily on the results of cosmological simulations, it will make use of a variety of high performance computing infrastructures. While preliminary code development takes place on in-house university desktop machines, execution of PyUltraLight for high resolution simulations takes place primarily on cloud-based virtual machines provided by Nectar \cite{nectar}. Nectar provides infrastructure, software, and services that facilitate easy access to remote instances on which codes can be executed, and data analysed and stored. The virtual machines offer higher processing power and memory specifications than do in-house desktop machines, and thus efficient code execution. 
+In addition to Nectar infrastructure, access to the cluster environments provided by New Zealand eScience Infrastructure (NeSI) will also be made use of \cite{nesi}. This will be particularly useful when MPI compatibility is required for maximum performance.
+
+
+\section{Facilities and Budget}
+
+As detailed above, the facilities necessary for this research are to be provided by Nectar Cloud and NeSi, both of which have existing operational relationships with the University of Auckland, and will not necessitate additional funding. As this is mainly theoretical and computational work, no access to laboratory facilities will be required. Therefore, the primary budgeting consideration is the PhD stipend, which is being provided by a University of Auckland departmental scholarship, and is supplemented by salary acquired through teaching assistantships throughout the year. Travel to attend conferences and seminars will be primarily covered by the university PReSS account, which provides 2900 NZD per annum. Additional funding for conference attendance and overseas collaborative excursions will be applied for as and when necessary.
+
+
+\section{Deliverables and Timeline}
+
+\subsection*{January - April 2019}
+\begin{itemize}
+    \item Finalise theoretical work on the core-cusp problem in ULDM, compile numerical results, and write corresponding paper for submission to both the arXiv and a Journal
+\end{itemize}
+
+\subsection*{May - August 2019}
+\begin{itemize}
+    \item Compile an archive of simulation results testing the gravitational cooling process in ULDM structure formation. 
+    \item Write paper on gravitational cooling, with a particular focus on total mass loss rates and the effect on the soliton-NFW transition radius, as well as the time evolution of the virial radius. Submit to the arXiv and a journal
+\end{itemize}
+
+\subsection*{September 2019 - March 2020}
+\begin{itemize}
+    \item Focus on development and testing on AMR solver for ULDM dynamics
+    \item Compare previous PyUltraLight results with AMR results
+    \item Contribute to the writing of a release paper for the AMR solver, and submit this paper to a journal and the arXiv
+    \item Begin more detailed studies of ULDM structure formation under cosmological initial conditions and including expansion. Analyse the statistical properties of the halos formed
+    \item Write paper contrasting cosmological ULDM simulations with existing WIMP DM simulations, highlighting discrepancies that may be observable. Submit to the arXiv and a journal
+\end{itemize}
+
+\subsection*{April - August 2020}
+\begin{itemize}
+    \item Analyse which of the additional research directions discussed in section \ref{additional} may result in publishable results within this timeframe, and pursue this research with the aim to write a corresponding paper.
+\end{itemize}
+
+\subsection*{September - December 2020}
+\begin{itemize}
+    \item Write and submit thesis
+\end{itemize}
+
+
+
+\section{Proposed Thesis Structure}
+
+It is intended that the thesis will be comprised primarily of works published thus far and over the coming two years, with the addition of supplementary background information and context. The proposed outline is as follows:
+
+\begin{enumerate}
+    \item Introduction:
+        \begin{itemize}
+            \item Background information explaining the current leading models of dark matter, their achievements and shortcomings, and motivation for the study of alternatives such as ULDM
+            \item Introduction to the relevant theoretical details of ULDM
+            \item Description of thesis intent and research direction
+        \end{itemize}
+    \item PyUltraLight: A Pseudo-Spectral Solver for Ultralight Dark Matter Dynamics
+        \begin{itemize}
+            \item Description of the technical aspects of the PyUltraLight code
+            \item Verification of the PyUltraLight code through convergence testing and comparison to exisiting results
+        \end{itemize}
+    \item The Core-Cusp Problem: A Comparison Between ULDM and WIMP DM models
+        \begin{itemize}
+            \item Discussion of the core-cusp problem in WIMP DM, and the proposed ULDM solution
+            \item Comparison of theoretical profiles for ULDM and WIMP DM halos at different mass ranges, with a quantitative study of how the results are affected by the virial mass assumption
+            \item Comparison of ULDM and WIMP DM simulation data in support of the above theoretical comparison
+        \end{itemize}
+    \item ULDM: The Soliton to NFW Transition and Gravitational Cooling
+        \begin{itemize}
+            \item Results of comprehensive numerical tests of factors affecting the transition radius, and thus the core-halo mass relation in ULDM halos.
+            \item A comprehensive study of the gravitational cooling process in ULDM, and the effects this has on transition radius and core stability
+            \item A numerical study of the time-evolution of the virial radius as gravitational cooling proceeds
+        \end{itemize}
+    \item AxioNyx: An AMR solver for Ultralight Dark Matter Dynamics
+        \begin{itemize}
+            \item A comprehensive introduction to the technical aspects of the ULDM AMR code
+            \item Comparison of previous PyUltraLight results regarding gravitational cooling and the ULDM halo formation with equivalent AMR results
+            \item Results of large-scale cosmological simulations performed with AMR
+        \end{itemize}
+    \item Supplementary Materials
+        \begin{itemize}
+            \item Discussion of relevant current research being conducted elsewhere and further theoretical/numerical developments in the wider dark matter community
+        \end{itemize}
+    \item{Conclusions and Future Research Directions}
+\end{enumerate}
+
+
+\section{Ethics approvals}
+
+I do not anticipate that ethics approvals will be required during any stage of this research. 
